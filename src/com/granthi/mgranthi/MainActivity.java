@@ -1,22 +1,55 @@
 package com.granthi.mgranthi;
 
+import java.io.File;
+import java.io.FilenameFilter;
+
+import net.sf.andpdf.pdfviewer.PdfViewerActivity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.app.Activity;
+import android.app.ListActivity;
+import android.content.Intent;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ListActivity {
+	String[] pdflist;
+    File[] imagelist;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //setContentView(R.layout.main);
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-	}
+       System.out.println(Environment.getExternalStorageState());
+        File images = Environment.getExternalStorageDirectory();
+        imagelist = images.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return ((name.endsWith(".pdf")));
+            }
+        });
+        pdflist = new String[imagelist.length];
+        for (int i = 0; i < imagelist.length; i++) {
+            pdflist[i] = imagelist[i].getName();
+        }
+        this.setListAdapter(new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, pdflist));
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        String path = imagelist[(int) id].getAbsolutePath();
+        openPdfIntent(path);
+    }
 
+    private void openPdfIntent(String path) {
+        try {
+            final Intent intent = new Intent(MainActivity.this, Second.class);
+            intent.putExtra(PdfViewerActivity.EXTRA_PDFFILENAME, path);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

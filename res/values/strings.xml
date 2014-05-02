@@ -3,6 +3,7 @@
 
     <string name="app_name">MGranthi</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">Tushar Sappal</string>
+    <string  name="second">Second</string>
 
 </resources>
